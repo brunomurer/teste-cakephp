@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Controller;
+
+use App\Controller\AppController;
+
+class PeoplesController extends AppController
+{
+ public function initialize()
+    {
+        parent::initialize();
+        $this->loadComponent('RequestHandler');
+    }
+
+   public function index()
+    {
+		$this->autoRender = false; 
+        $Peoples = $this->Peoples->find('all');
+         return  $this->set([
+            'Peoples' => $Peoples,
+            '_serialize' => ['Peoples']
+        ]);
+    }
+
+    public function view($id)
+    {
+		$this->autoRender = false; 
+        $recipe = $this->Peoples->get($id);
+        return  $this->set([
+            'recipe' => $recipe,
+            '_serialize' => ['recipe']
+        ]);
+    }
+
+    public function add()
+    {
+		$this->autoRender = false; 
+        $recipe = $this->Peoples->newEntity($this->request->getData());
+        if ($this->Peoples->save($recipe)) {
+            $message = 'Saved';
+        } else {
+            $message = 'Error';
+        }
+         return $this->set([
+            'message' => $message,
+            'recipe' => $recipe,
+            '_serialize' => ['message', 'recipe']
+        ]);
+    }
+
+    public function edit($id)
+    {
+		$this->autoRender = false; 
+		
+        $recipe = $this->Peoples->get($id);
+        if ($this->request->is(['post', 'put'])) {
+            $recipe = $this->Peoples->patchEntity($recipe, $this->request->getData());
+            if ($this->Peoples->save($recipe)) {
+                $message = 'Saved';
+            } else {
+                $message = 'Error';
+            }
+        }
+		
+      return $this->set([
+            'message' => $message,
+            '_serialize' => ['message']
+        ]);
+    }
+
+    public function delete($id)
+    {
+		
+        $recipe = $this->Peoples->get($id);
+        $message = 'Deleted';
+        if (!$this->Peoples->delete($recipe)) {
+            $message = 'Error';
+        }
+        return $this->set([
+            'message' => $message,
+            '_serialize' => ['message']
+        ]);
+    }
+}
